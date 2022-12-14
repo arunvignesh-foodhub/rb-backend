@@ -96,7 +96,9 @@ post '/connection_token' do
   end
 
   begin
-    token = Stripe::Terminal::ConnectionToken.create
+    token = Stripe::Terminal::ConnectionToken.create(
+                                                          :location => params[:location]
+                                                        )
   rescue Stripe::StripeError => e
     status 402
     return log_info("Error creating ConnectionToken! #{e.message}")
@@ -200,7 +202,7 @@ post '/create_setup_intent' do
     end
 
     setup_intent = Stripe::SetupIntent.create(setup_intent_params)
-    
+
   rescue Stripe::StripeError => e
     status 402
     return log_info("Error creating SetupIntent! #{e.message}")
@@ -290,7 +292,7 @@ post '/create_location' do
     status 400
     return log_info(validationError)
   end
-  
+
   begin
     location = Stripe::Terminal::Location.create(
       display_name: params[:display_name],
